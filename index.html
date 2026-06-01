@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive, nositelinkssearchbox">
+<meta name="googlebot" content="noindex, nofollow">
+<title>Ecom North · Roundtable Host Kit</title>
+<meta name="description" content="Internal facilitation tool for hosting the Ecom North Collective virtual roundtable.">
+<style>
+  :root {
+    /* North palette — restrained, one brand accent + one functional alert */
+    --bg: oklch(1 0 0);
+    --surface: oklch(0.985 0.003 200);
+    --surface-2: oklch(0.965 0.006 200);
+    --line: oklch(0.9 0.008 210);
+    --line-strong: oklch(0.82 0.012 210);
+    --ink: oklch(0.22 0.012 230);
+    --ink-soft: oklch(0.42 0.014 230);
+    --ink-mute: oklch(0.54 0.012 230);
+    --north: oklch(0.52 0.084 192);      /* deep evergreen-teal */
+    --north-deep: oklch(0.40 0.075 195);
+    --north-wash: oklch(0.96 0.022 192);
+    --amber: oklch(0.72 0.155 65);       /* live-timer only */
+    --amber-wash: oklch(0.95 0.05 75);
+    --danger: oklch(0.55 0.18 25);
+
+    --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+    --r: 12px;
+    --r-sm: 8px;
+    --shadow: 0 1px 2px oklch(0.22 0.01 230 / 0.05), 0 8px 24px oklch(0.22 0.01 230 / 0.06);
+    --z-sticky: 100; --z-toast: 400;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--north-wash); }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- Masthead ---------- */
+  .mast {
+    border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(120% 100% at 100% 0%, var(--north-wash) 0%, transparent 55%),
+      var(--bg);
+  }
+  .mast-inner { padding: 40px 0 30px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end; justify-content: space-between; }
+  .brand-eyebrow {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--north-deep);
+  }
+  .compass {
+    width: 16px; height: 16px; flex: none; color: var(--north);
+  }
+  h1.title {
+    font-family: var(--serif); font-weight: 600;
+    font-size: clamp(2rem, 1.3rem + 3vw, 3.4rem);
+    line-height: 1.02; letter-spacing: -0.025em; margin-top: 12px;
+    text-wrap: balance; max-width: 16ch;
+  }
+  .subtitle { color: var(--ink-soft); margin-top: 14px; max-width: 56ch; font-size: 1.05rem; }
+  .meta-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .chip {
+    font-size: 13px; font-weight: 550; color: var(--ink-soft);
+    background: var(--surface); border: 1px solid var(--line);
+    padding: 6px 12px; border-radius: 100px;
+  }
+  .chip b { color: var(--ink); font-weight: 650; }
+
+  /* ---------- Timer panel ---------- */
+  .timer-card {
+    background: var(--ink);
+    color: oklch(0.96 0.005 230);
+    border-radius: var(--r);
+    padding: 20px 22px;
+    width: min(360px, 100%);
+    box-shadow: var(--shadow);
+    position: relative; overflow: hidden;
+  }
+  .timer-card::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(90% 120% at 0% 0%, oklch(0.52 0.084 192 / 0.35), transparent 60%);
+    pointer-events: none;
+  }
+  .timer-card.running { box-shadow: 0 0 0 1px var(--amber), var(--shadow); }
+  .timer-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.78 0.02 200); position: relative; }
+  .timer-seg { font-family: var(--serif); font-size: 1.15rem; margin: 3px 0 8px; min-height: 1.5em; position: relative; }
+  .timer-clock {
+    font-family: var(--mono); font-size: 3.6rem; font-weight: 600; line-height: 1;
+    letter-spacing: -0.02em; position: relative; font-variant-numeric: tabular-nums;
+  }
+  .running .timer-clock { color: var(--amber); }
+  .timer-clock.warn { color: var(--amber); animation: pulse 1s steps(2) infinite; }
+  @keyframes pulse { 50% { opacity: 0.45; } }
+  .timer-bar { height: 5px; border-radius: 100px; background: oklch(0.34 0.01 230); margin: 14px 0 16px; overflow: hidden; position: relative; }
+  .timer-bar > i { display: block; height: 100%; width: 0%; background: var(--amber); transition: width 0.4s linear; }
+  .timer-controls { display: flex; gap: 8px; position: relative; }
+  .tbtn {
+    flex: 1; cursor: pointer; font-family: var(--sans); font-size: 14px; font-weight: 600;
+    color: var(--ink); background: oklch(0.96 0.005 230); border: 0; border-radius: var(--r-sm);
+    padding: 11px 10px; transition: transform 0.15s var(--ease), background 0.15s;
+  }
+  .tbtn:hover { transform: translateY(-1px); }
+  .tbtn:active { transform: translateY(0); }
+  .tbtn.primary { background: var(--amber); }
+  .tbtn.ghost { background: oklch(0.30 0.01 230); color: oklch(0.92 0.005 230); }
+  .timer-cue {
+    position: relative; margin-top: 14px; padding: 12px 14px; border-radius: var(--r-sm);
+    background: oklch(0.30 0.012 230); font-size: 13.5px; line-height: 1.45;
+    border: 1px solid oklch(0.40 0.01 230); min-height: 2.4em;
+  }
+  .timer-cue b { color: var(--amber); }
+
+  /* ---------- Section scaffolding ---------- */
+  section { padding: 54px 0; border-bottom: 1px solid var(--line); }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 26px; }
+  .sec-head h2 {
+    font-family: var(--serif); font-weight: 600; font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.1rem);
+    letter-spacing: -0.02em;
+  }
+  .sec-head .num { font-family: var(--mono); font-size: 13px; color: var(--north-deep); font-weight: 600; padding-top: 6px; }
+  .lead { color: var(--ink-soft); max-width: 64ch; font-size: 1.05rem; margin-bottom: 8px; }
+
+  /* ---------- Run of show ---------- */
+  .ros { display: flex; flex-direction: column; gap: 10px; }
+  .seg {
+    display: grid; grid-template-columns: 96px 1fr auto; gap: 18px; align-items: center;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r);
+    padding: 16px 18px; cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.15s var(--ease);
+    text-align: left; width: 100%; font: inherit; color: inherit;
+  }
+  .seg:hover { border-color: var(--line-strong); transform: translateX(2px); }
+  .seg.active { border-color: var(--north); background: var(--north-wash); }
+  .seg .time { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--north-deep); }
+  .seg .time small { display: block; color: var(--ink-mute); font-weight: 500; margin-top: 2px; }
+  .seg .what strong { display: block; font-size: 1.05rem; font-weight: 650; letter-spacing: -0.01em; }
+  .seg .what span { color: var(--ink-soft); font-size: 0.94rem; }
+  .seg .dur { font-family: var(--mono); font-size: 12px; color: var(--ink-mute); background: var(--bg); border: 1px solid var(--line); padding: 4px 9px; border-radius: 100px; white-space: nowrap; }
+  .seg.active .dur { border-color: var(--north); color: var(--north-deep); }
+  .ros-foot { margin-top: 14px; font-family: var(--mono); font-size: 13px; color: var(--ink-mute); display: flex; align-items: center; gap: 8px; }
+  .ros-foot b { color: var(--north-deep); }
+
+  /* ---------- Script blocks ---------- */
+  .scripts { display: grid; gap: 16px; }
+  .script {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden;
+  }
+  .script > summary {
+    list-style: none; cursor: pointer; padding: 18px 20px; display: flex; align-items: center; gap: 12px;
+    font-weight: 650; font-size: 1.05rem;
+  }
+  .script > summary::-webkit-details-marker { display: none; }
+  .script > summary .tag { font-family: var(--mono); font-size: 12px; color: var(--bg); background: var(--north); padding: 4px 9px; border-radius: 100px; font-weight: 600; }
+  .script > summary .caret { margin-left: auto; color: var(--ink-mute); transition: transform 0.2s var(--ease); }
+  .script[open] > summary .caret { transform: rotate(90deg); }
+  .script-body { padding: 0 20px 20px; }
+  .quote {
+    font-family: var(--serif); font-size: 1.08rem; line-height: 1.66; color: var(--ink);
+    background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm);
+    padding: 18px 20px; position: relative;
+  }
+  .quote p + p { margin-top: 12px; }
+  .quote .rule { color: var(--north-deep); font-weight: 700; font-family: var(--sans); }
+  .copy {
+    margin-top: 12px; cursor: pointer; font: 600 13px var(--sans); color: var(--north-deep);
+    background: var(--north-wash); border: 1px solid var(--north); border-radius: 100px; padding: 7px 14px;
+    transition: transform 0.15s var(--ease);
+  }
+  .copy:hover { transform: translateY(-1px); }
+  .cue-list { margin-top: 14px; display: grid; gap: 6px; }
+  .cue-row { display: grid; grid-template-columns: 56px 1fr; gap: 12px; font-size: 14px; padding: 8px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm); }
+  .cue-row .t { font-family: var(--mono); font-size: 12px; color: var(--amber); font-weight: 600; padding-top: 2px; }
+  .cue-row b { color: var(--north-deep); }
+
+  /* ---------- Prompt bank ---------- */
+  .bank { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+  .bank-col { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; }
+  .bank-col h3 { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; letter-spacing: -0.015em; }
+  .bank-col .hint { color: var(--ink-soft); font-size: 0.92rem; margin: 6px 0 16px; }
+  .bank-col.business { background: var(--north-wash); border-color: var(--north); }
+  .prompts { display: flex; flex-direction: column; gap: 9px; counter-reset: p; }
+  .prompt {
+    display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; background: var(--bg);
+    border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer; text-align: left;
+    font: inherit; color: var(--ink); transition: border-color 0.15s, transform 0.12s var(--ease);
+  }
+  .prompt:hover { border-color: var(--north); transform: translateX(2px); }
+  .prompt::before {
+    counter-increment: p; content: counter(p); font-family: var(--mono); font-size: 12px; font-weight: 600;
+    color: var(--bg); background: var(--north); min-width: 22px; height: 22px; border-radius: 50%;
+    display: grid; place-items: center; flex: none; margin-top: 1px;
+  }
+  .prompt span { font-size: 0.97rem; line-height: 1.45; }
+  .default-combo {
+    margin-top: 16px; font-size: 0.92rem; color: var(--ink-soft);
+    background: var(--bg); border: 1px dashed var(--line-strong); border-radius: var(--r-sm); padding: 12px 14px;
+  }
+  .default-combo b { color: var(--north-deep); }
+
+  /* ---------- Generic content ---------- */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px 22px; }
+  .card h4 { font-size: 1.02rem; font-weight: 650; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .card h4 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--north); flex: none; }
+  .card p { color: var(--ink-soft); font-size: 0.95rem; }
+  .card p b { color: var(--ink); }
+
+  .why { display: grid; gap: 2px; }
+  .why details { border-bottom: 1px solid var(--line); }
+  .why summary { cursor: pointer; padding: 15px 4px; font-weight: 600; list-style: none; display: flex; gap: 12px; align-items: center; }
+  .why summary::-webkit-details-marker { display: none; }
+  .why summary .k { font-family: var(--mono); font-size: 12px; color: var(--north-deep); }
+  .why summary .caret { margin-left: auto; color: var(--ink-mute); transition: transform 0.2s; }
+  .why details[open] summary .caret { transform: rotate(90deg); }
+  .why .ans { padding: 0 4px 16px 38px; color: var(--ink-soft); font-size: 0.96rem; max-width: 70ch; }
+
+  /* ---------- Footer ---------- */
+  footer { padding: 40px 0 60px; color: var(--ink-mute); font-size: 0.9rem; }
+  footer .tl { font-family: var(--serif); color: var(--ink); font-size: 1.05rem; max-width: 78ch; line-height: 1.6; }
+  footer .src { margin-top: 18px; font-family: var(--mono); font-size: 12px; }
+
+  /* ---------- Toast ---------- */
+  #toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--bg); padding: 12px 20px; border-radius: 100px;
+    font-size: 14px; font-weight: 600; opacity: 0; pointer-events: none; z-index: var(--z-toast);
+    transition: opacity 0.25s, transform 0.25s var(--ease); box-shadow: var(--shadow);
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- Sticky mini-timer (mobile / scroll) ---------- */
+  .dock {
+    position: sticky; top: 0; z-index: var(--z-sticky);
+    background: oklch(1 0 0 / 0.85); backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--line); display: none;
+  }
+  .dock.show { display: block; }
+  .dock-inner { display: flex; align-items: center; gap: 14px; padding: 10px 24px; max-width: 1120px; margin: 0 auto; }
+  .dock .d-seg { font-size: 13px; color: var(--ink-soft); font-weight: 600; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dock .d-clock { font-family: var(--mono); font-weight: 700; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+  .dock.running .d-clock { color: var(--amber); }
+  .dock .d-btn { cursor: pointer; font: 600 13px var(--sans); border: 1px solid var(--line-strong); background: var(--bg); border-radius: 100px; padding: 6px 14px; color: var(--ink); }
+
+  @media (max-width: 720px) {
+    .seg { grid-template-columns: 78px 1fr; }
+    .seg .dur { display: none; }
+    .mast-inner { flex-direction: column; align-items: stretch; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto; }
+  }
+
+  /* ---------- Print ---------- */
+  @media print {
+    .timer-card, .dock, .copy, .tbtn, #toast, .seg .dur { display: none !important; }
+    body { color: #000; }
+    section { padding: 18px 0; break-inside: avoid; border-color: #ccc; }
+    .script[open] .script-body, .script-body { display: block !important; }
+    .script, details { open: true; }
+    details:not([open]) > *:not(summary) { display: revert; }
+    .why details > .ans { display: block !important; }
+    .quote, .seg, .card, .bank-col { box-shadow: none; }
+    a[href]::after { content: ""; }
+    .mast { background: #fff; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sticky dock timer (appears on scroll) -->
+<div class="dock" id="dock">
+  <div class="dock-inner">
+    <span class="d-seg" id="dSeg">Ready</span>
+    <span class="d-clock" id="dClock">00:00</span>
+    <button class="d-btn" id="dToggle">Start</button>
+    <button class="d-btn" id="dNext">Next ›</button>
+  </div>
+</div>
+
+<header class="mast">
+  <div class="wrap mast-inner">
+    <div>
+      <span class="brand-eyebrow">
+        <svg class="compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><polygon points="12,6 14,12 12,18 10,12" fill="currentColor" stroke="none"/></svg>
+        Ecom North · Northbound
+      </span>
+      <h1 class="title">The Roundtable Host Kit</h1>
+      <p class="subtitle">Everything you need to run a 60-minute Collective roundtable where founders mine the gold in the room. Built for any team member to host cold. Start the timer, read the lines, follow the rows.</p>
+      <div class="meta-chips">
+        <span class="chip"><b>60 min</b></span>
+        <span class="chip"><b>9&ndash;15</b> founders</span>
+        <span class="chip"><b>Trios</b> of 3</span>
+        <span class="chip"><b>Peer-to-peer</b></span>
+        <span class="chip">Prep: <b>~2 min</b></span>
+      </div>
+    </div>
+
+    <!-- Timer -->
+    <div class="timer-card" id="timerCard">
+      <div class="timer-label" id="tLabel">Segment 0 / 7 &middot; not started</div>
+      <div class="timer-seg" id="tSeg">Press start when the room is in</div>
+      <div class="timer-clock" id="tClock">00:00</div>
+      <div class="timer-bar"><i id="tFill"></i></div>
+      <div class="timer-controls">
+        <button class="tbtn primary" id="tToggle">Start session</button>
+        <button class="tbtn" id="tNext">Next ›</button>
+        <button class="tbtn ghost" id="tReset">Reset</button>
+      </div>
+      <div class="timer-cue" id="tCue">Tip: click any row in the run of show to jump the timer to that segment.</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- RUN OF SHOW -->
+<section id="ros">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">01</span><h2>Run of show</h2></div>
+    <p class="lead">The timer follows this list top to bottom. Click a row to load it. During the breakout, watch the cue box on the timer for the lines to broadcast to all rooms.</p>
+    <div class="ros" id="rosList"></div>
+    <div class="ros-foot">Total <b>60:00</b> &middot; one breakout round, three timed hot-seats per trio.</div>
+  </div>
+</section>
+
+<!-- SCRIPTS -->
+<section id="scripts">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">02</span><h2>Host scripts</h2></div>
+    <p class="lead">Say these close to verbatim. The opener sets safety and states the one rule; the breakout cues keep every room on the same clock; the close lands on belonging + a commitment.</p>
+    <div class="scripts">
+
+      <details class="script" open>
+        <summary><span class="tag">0:00</span> Opening &middot; consent to the intent <span class="caret">›</span></summary>
+        <div class="script-body">
+          <div class="quote" id="q1">
+            <p>&ldquo;Welcome, everyone. Quick note on why we run roundtables instead of another office hour: <b>this room has more combined operator experience than any course you could buy.</b> We&rsquo;re here today so that you can get unstuck on something real, by borrowing the brains of three other founders who get it.&rdquo;</p>
+            <p>&ldquo;Here&rsquo;s how it works: I&rsquo;ll put you in <b>trios</b>. You&rsquo;ll warm up with one quick question, then each of you gets the hot seat for six minutes.&rdquo;</p>
+            <p><span class="rule">One rule, and it&rsquo;s the whole game:</span> when it&rsquo;s someone&rsquo;s turn, the other two <b>ask curious questions first &mdash; no advice for the first two minutes.</b> The best help is a great question. You&rsquo;ll have time to give advice after.&rdquo;</p>
+            <p>&ldquo;Everything is <b>challenge by choice</b> &mdash; share as much or as little as you want. Let&rsquo;s go.&rdquo;</p>
+          </div>
+          <button class="copy" data-copy="#q1">Copy opener</button>
+        </div>
+      </details>
+
+      <details class="script">
+        <summary><span class="tag">0:06</span> Breakout cues &middot; broadcast to all rooms <span class="caret">›</span></summary>
+        <div class="script-body">
+          <p class="lead" style="margin-bottom:6px">Send each line with Zoom &ldquo;broadcast message to all rooms.&rdquo; The live timer surfaces these automatically while the breakout runs.</p>
+          <div class="cue-list">
+            <div class="cue-row"><span class="t">+0:00</span><span><b>START.</b> Connection question first (4 min) &mdash; everyone answers.</span></div>
+            <div class="cue-row"><span class="t">+4:00</span><span><b>HOT SEAT.</b> Person 1: 1 min on what you&rsquo;re stuck on. Others: clarifying questions ONLY.</span></div>
+            <div class="cue-row"><span class="t">+7:00</span><span>Person 1: open the floor for advice now (3 min).</span></div>
+            <div class="cue-row"><span class="t">+10:00</span><span><b>SWITCH</b> to Person 2. 1 min stuck &rarr; 2 min questions only &rarr; 3 min advice.</span></div>
+            <div class="cue-row"><span class="t">+16:00</span><span><b>SWITCH</b> to Person 3. Same flow.</span></div>
+            <div class="cue-row"><span class="t">+22:00</span><span>2 min left &mdash; pick the ONE best nugget your trio heard.</span></div>
+          </div>
+        </div>
+      </details>
+
+      <details class="script">
+        <summary><span class="tag">0:50</span> Closing &middot; commitment + group anthem <span class="caret">›</span></summary>
+        <div class="script-body">
+          <div class="quote" id="q3">
+            <p>&ldquo;Two things in the chat before we go:&rdquo;</p>
+            <p>1. <b>One commitment</b> &mdash; &lsquo;By next week I will ___.&rsquo;<br>
+               2. <b>One closing line</b> that starts with &lsquo;I am&hellip;&rsquo;, &lsquo;I believe&hellip;&rsquo;, or &lsquo;I will&hellip;&rsquo;</p>
+            <p>&ldquo;I&rsquo;ll post today&rsquo;s Gold doc in Slack tonight so nothing gets lost. Thank you for being generous with the room. See you at the social.&rdquo;</p>
+          </div>
+          <button class="copy" data-copy="#q3">Copy closing</button>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROMPT BANK -->
+<section id="bank">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">03</span><h2>Prompt bank</h2></div>
+    <p class="lead">Your entire prep: pick one from each column and paste both onto a slide the trios can see. Click any prompt to copy it. Rotate so it stays fresh. All open-ended by design.</p>
+    <div class="bank">
+      <div class="bank-col connection">
+        <h3>A · Connection warm-up</h3>
+        <p class="hint">The 4-minute trio opener. Activates every voice early, in the safety of 3.</p>
+        <div class="prompts">
+          <button class="prompt"><span>In one word: what state are you arriving in today, and what state do you want to be in by the end?</span></button>
+          <button class="prompt"><span>What&rsquo;s one thing taking up a lot of your brain space right now, business or life?</span></button>
+          <button class="prompt"><span>Something most people don&rsquo;t know about me is&hellip;</span></button>
+          <button class="prompt"><span>What&rsquo;s one thing you know really well that has nothing to do with ecom? (e-bikes, cheese boards, baseball&hellip;)</span></button>
+          <button class="prompt"><span>What&rsquo;s one small win from the last week, big or tiny?</span></button>
+          <button class="prompt"><span>Finish this: &lsquo;If you really knew me, you&rsquo;d know&hellip;&rsquo;</span></button>
+        </div>
+      </div>
+      <div class="bank-col business">
+        <h3>B · Get-unstuck</h3>
+        <p class="hint">Frames the hot-seat. Targets a real, &ldquo;ungoogleable&rdquo; problem, not bonding for its own sake.</p>
+        <div class="prompts">
+          <button class="prompt"><span>What&rsquo;s one &lsquo;ungoogleable&rsquo; problem you&rsquo;re facing right now, the kind you can&rsquo;t just look up?</span></button>
+          <button class="prompt"><span>Where are you most stuck in your business this month?</span></button>
+          <button class="prompt"><span>What&rsquo;s one decision you&rsquo;ve been avoiding or going back and forth on?</span></button>
+          <button class="prompt"><span>What&rsquo;s the bottleneck that, if solved, would unlock the most in the next 90 days?</span></button>
+          <button class="prompt"><span>What&rsquo;s one thing that&rsquo;s saved you serious time or money lately, and one thing currently costing you both?</span></button>
+          <button class="prompt"><span>What&rsquo;s a number in your business that&rsquo;s keeping you up at night?</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="default-combo">Don&rsquo;t want to choose? <b>Default combo:</b> A2 (&ldquo;brain space&rdquo;) + B1 (&ldquo;ungoogleable problem&rdquo;). Works every time.</div>
+  </div>
+</section>
+
+<!-- CONTINGENCIES -->
+<section id="contingencies">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">04</span><h2>If something goes sideways</h2></div>
+    <p class="lead">Pre-answered so a host running this cold never freezes.</p>
+    <div class="grid-2">
+      <div class="card"><h4><span class="dot"></span>Odd numbers</h4><p>Trios of 3 are ideal. If the count doesn&rsquo;t divide by 3, make <b>one group of 4</b> before you ever make a group of 2. Never leave someone alone. 11 &rarr; 3+4+4. 13 &rarr; 3+3+3+4.</p></div>
+      <div class="card"><h4><span class="dot"></span>The host isn&rsquo;t Li</h4><p>This kit is verbatim-runnable. Your only job: <b>keep time and open warmly.</b> You&rsquo;re the thread-starter, not the thread-solver. Don&rsquo;t answer the business questions yourself.</p></div>
+      <div class="card"><h4><span class="dot"></span>Someone dominates</h4><p>The timed hot-seat + broadcast cues handle it automatically. If a room runs long, the room-close countdown bails you out.</p></div>
+      <div class="card"><h4><span class="dot"></span>Low turnout (6&ndash;8)</h4><p>Run two trios, everything else identical. Harvest is faster, so spend the extra minutes on open floor.</p></div>
+      <div class="card"><h4><span class="dot"></span>A quiet room</h4><p>The on-screen prompt is the rescue. Tell rooms at the start: &ldquo;read the prompt out loud if it gets quiet.&rdquo;</p></div>
+      <div class="card"><h4><span class="dot"></span>The Gold doc</h4><p>One nugget per room, typed live into a doc during harvest. That doc <b>is</b> the mined gold &mdash; post it to Slack within 24h. Over a year it becomes a searchable founder-wisdom archive.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">05</span><h2>Why it&rsquo;s built this way</h2></div>
+    <p class="lead">BNI structure + Chad Littlefield facilitation, mapped to the gaps in the April 2026 community audit. Skip unless curious.</p>
+    <div class="why">
+      <details><summary><span class="k">01</span>Connection before content<span class="caret">›</span></summary><div class="ans">The 4-minute warm-up comes before business. You can&rsquo;t change how someone thinks until you change how they feel.</div></details>
+      <details><summary><span class="k">02</span>The 5% rule &mdash; activate the larynx<span class="caret">›</span></summary><div class="ans">People who speak in the first 5% of a gathering stay far more engaged. Putting the opener inside the trio (not the room of 15) means everyone speaks in minute one, with no stage fright.</div></details>
+      <details><summary><span class="k">03</span>Trios, not pairs or big groups<span class="caret">›</span></summary><div class="ans">Three is intimate enough for safety, with a buffer if one person&rsquo;s having an off day. The audit flagged that every current format is full-group, where intimidation thrives.</div></details>
+      <details><summary><span class="k">04</span>Clarifying questions before advice<span class="caret">›</span></summary><div class="ans">The single mechanic that actually mines the gold. Without it, the loudest person solves nothing in minute one. The best help is a great question.</div></details>
+      <details><summary><span class="k">05</span>The 7:1 contribution ratio<span class="caret">›</span></summary><div class="ans">In a 60-minute pure-peer roundtable the members talk ~90% of the time. The host talks for about 8 minutes total. You&rsquo;re the host, not the sage on the stage.</div></details>
+      <details><summary><span class="k">06</span>Primacy &amp; recency<span class="caret">›</span></summary><div class="ans">People remember the first and last moments, so we bookend deliberately: a warm consent-to-the-intent open, and a commitment + &ldquo;I am / I believe / I will&rdquo; close. No fizzle.</div></details>
+      <details><summary><span class="k">07</span>Painkiller over vitamin<span class="caret">›</span></summary><div class="ans">The business prompt targets a real stuck problem, not bonding for its own sake. Both outcomes are structural, not left to chance: belonging (opener + close) and unstuck (hot-seat).</div></details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="tl">Pick a theme + two prompts (2 min). Open warm, state the one rule. Trios of 3 for 24 minutes: warm-up, then timed hot-seats with questions before advice. Harvest one nugget per room into a doc. Close with a commitment and an &ldquo;I will.&rdquo; Post the doc to Slack. Done in 60.</p>
+    <p class="src">Internal tool &middot; Ecom North Collective &middot; not indexed. Sources: BNI meeting model, Chad Littlefield facilitation frameworks, ECN Community Audit (Apr 2026).</p>
+  </div>
+</footer>
+
+<div id="toast">Copied to clipboard</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Segment model — drives both the run-of-show list and the timer.
+  // cues: [{at: secondsIntoSegment, text}]
+  var SEGMENTS = [
+    { t: "0:00", range: "0:00–0:04", dur: 4*60, name: "Welcome + consent to the intent",
+      desc: "State why we gather, then the one rule: clarifying questions before advice.",
+      cue: "Read the opener (Host scripts ▸ Opening). Land the ONE rule: <b>questions before advice.</b>" },
+    { t: "0:04", range: "0:04–0:06", dur: 2*60, name: "Send to rooms",
+      desc: "Auto-assign trios of 3. “Screenshot your two prompts now.”",
+      cue: "Open breakout rooms: <b>auto-assign, 3 per room</b>, allow return to main room." },
+    { t: "0:06", range: "0:06–0:30", dur: 24*60, name: "The breakout",
+      desc: "Connection warm-up (4 min) → rotating 6-min hot-seats. Broadcast the cues.",
+      cues: [
+        { at: 0,     text: "<b>BROADCAST:</b> START &mdash; Connection question first (4 min), everyone answers." },
+        { at: 4*60,  text: "<b>BROADCAST:</b> HOT SEAT. Person 1: 1 min stuck. Others: <b>questions ONLY.</b>" },
+        { at: 7*60,  text: "<b>BROADCAST:</b> Person 1 &mdash; open the floor for advice (3 min)." },
+        { at: 10*60, text: "<b>BROADCAST:</b> SWITCH to Person 2. Stuck → questions only → advice." },
+        { at: 16*60, text: "<b>BROADCAST:</b> SWITCH to Person 3. Same flow." },
+        { at: 22*60, text: "<b>BROADCAST:</b> 2 min left &mdash; pick the ONE best nugget you heard." }
+      ] },
+    { t: "0:30", range: "0:30–0:33", dur: 3*60, name: "Bring back + reset",
+      desc: "Close rooms (60-sec auto countdown). “Pick the one best nugget.”",
+      cue: "Close breakout rooms. “Welcome back &mdash; in your trio, lock your ONE best nugget.”" },
+    { t: "0:33", range: "0:33–0:42", dur: 9*60, name: "Harvest the gold",
+      desc: "Room by room: one nugget each (~45s). Type each into the Gold doc live.",
+      cue: "Go room by room. <b>One</b> nugget per room (~45s). Type each into the Gold doc." },
+    { t: "0:42", range: "0:42–0:50", dur: 8*60, name: "Open floor + synthesis",
+      desc: "Read back 2–3 themes. Take live asks. Make 1–2 connections out loud.",
+      cue: "Name the themes you heard. Make connections: “Sarah, talk to Miroki about email.”" },
+    { t: "0:50", range: "0:50–1:00", dur: 10*60, name: "Closing ritual + commitment",
+      desc: "Chat: one commitment + one “I am / I believe / I will” line. Post Gold doc.",
+      cue: "Read the closing script. Collect commitments in chat. Post the Gold doc within 24h." }
+  ];
+
+  var idx = -1, remaining = 0, running = false, ticker = null;
+
+  var el = function (id) { return document.getElementById(id); };
+  var tLabel = el("tLabel"), tSeg = el("tSeg"), tClock = el("tClock"),
+      tFill = el("tFill"), tCue = el("tCue"), tToggle = el("tToggle"),
+      tCard = el("timerCard"), rosList = el("rosList"),
+      dock = el("dock"), dSeg = el("dSeg"), dClock = el("dClock"),
+      dToggle = el("dToggle");
+
+  function fmt(s) {
+    s = Math.max(0, Math.round(s));
+    var m = Math.floor(s / 60), ss = s % 60;
+    return (m < 10 ? "0" : "") + m + ":" + (ss < 10 ? "0" : "") + ss;
+  }
+
+  // Build run-of-show rows
+  SEGMENTS.forEach(function (seg, i) {
+    var row = document.createElement("button");
+    row.className = "seg";
+    row.setAttribute("data-i", i);
+    row.innerHTML =
+      '<span class="time">' + seg.range.split("–")[0] +
+        '<small>' + seg.range.split("–")[1] + '</small></span>' +
+      '<span class="what"><strong>' + seg.name + '</strong><span>' + seg.desc + '</span></span>' +
+      '<span class="dur">' + (seg.dur / 60) + ' min</span>';
+    row.addEventListener("click", function () { load(i, false); });
+    rosList.appendChild(row);
+  });
+  var rows = Array.prototype.slice.call(document.querySelectorAll(".seg"));
+
+  function activeCueText(seg, elapsed) {
+    if (seg.cues) {
+      var current = seg.cues[0].text, t = 0;
+      for (var j = 0; j < seg.cues.length; j++) {
+        if (elapsed >= seg.cues[j].at) { current = seg.cues[j].text; t = seg.cues[j].at; }
+      }
+      return current;
+    }
+    return seg.cue || "";
+  }
+
+  function render() {
+    if (idx < 0) return;
+    var seg = SEGMENTS[idx], elapsed = seg.dur - remaining;
+    tLabel.innerHTML = "Segment " + (idx + 1) + " / " + SEGMENTS.length + " &middot; " + seg.range;
+    tSeg.textContent = seg.name;
+    tClock.textContent = fmt(remaining);
+    dSeg.textContent = (idx + 1) + "/" + SEGMENTS.length + "  " + seg.name;
+    dClock.textContent = fmt(remaining);
+    var pct = seg.dur ? (elapsed / seg.dur) * 100 : 0;
+    tFill.style.width = Math.min(100, pct) + "%";
+    tCue.innerHTML = activeCueText(seg, elapsed);
+    tClock.classList.toggle("warn", running && remaining <= 15);
+    rows.forEach(function (r, i) { r.classList.toggle("active", i === idx); });
+  }
+
+  function load(i, autostart) {
+    idx = i; remaining = SEGMENTS[i].dur; render();
+    if (autostart) start(); else { stop(); render(); }
+    rows[i].scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  function tick() {
+    remaining -= 1;
+    if (remaining <= 0) {
+      remaining = 0; render(); stop();
+      ding();
+      if (idx < SEGMENTS.length - 1) {
+        // brief pause, then advance + auto-run next
+        setTimeout(function () { load(idx + 1, true); }, 600);
+      } else {
+        toast("Session complete — nice work.");
+      }
+      return;
+    }
+    render();
+  }
+
+  function setRunningUI(on) {
+    running = on;
+    tToggle.textContent = on ? "Pause" : (idx < 0 ? "Start session" : "Resume");
+    tCard.classList.toggle("running", on);
+    dock.classList.toggle("running", on);
+    dToggle.textContent = on ? "Pause" : "Resume";
+  }
+
+  function start() {
+    if (idx < 0) load(0, false);
+    if (running) return;
+    setRunningUI(true);
+    clearInterval(ticker);
+    ticker = setInterval(tick, 1000);
+  }
+  function stop() { clearInterval(ticker); setRunningUI(false); }
+  function toggle() { if (running) stop(); else start(); }
+  function next() { load(Math.min(idx + 1, SEGMENTS.length - 1), running); }
+  function reset() { stop(); idx = -1; remaining = 0;
+    tLabel.innerHTML = "Segment 0 / " + SEGMENTS.length + " &middot; not started";
+    tSeg.textContent = "Press start when the room is in";
+    tClock.textContent = "00:00"; tFill.style.width = "0%";
+    tCue.innerHTML = "Tip: click any row in the run of show to jump the timer to that segment.";
+    dSeg.textContent = "Ready"; dClock.textContent = "00:00";
+    rows.forEach(function (r) { r.classList.remove("active"); });
+  }
+
+  // Soft chime via WebAudio (no asset needed). Fails silently if blocked.
+  function ding() {
+    try {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      var ac = new Ctx(), o = ac.createOscillator(), g = ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.type = "sine"; o.frequency.value = 880;
+      g.gain.setValueAtTime(0.0001, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.25, ac.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.6);
+      o.start(); o.stop(ac.currentTime + 0.62);
+    } catch (e) {}
+  }
+
+  tToggle.addEventListener("click", toggle);
+  el("tNext").addEventListener("click", next);
+  el("tReset").addEventListener("click", reset);
+  dToggle.addEventListener("click", toggle);
+  el("dNext").addEventListener("click", next);
+
+  // Keyboard: space = toggle, n = next, r = reset
+  document.addEventListener("keydown", function (e) {
+    if (/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
+    if (e.code === "Space") { e.preventDefault(); toggle(); }
+    else if (e.key === "n") next();
+    else if (e.key === "r") reset();
+  });
+
+  // Show dock when main timer scrolls out of view
+  var sentinel = el("timerCard");
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      dock.classList.toggle("show", !entries[0].isIntersecting);
+    }, { threshold: 0 }).observe(sentinel);
+  }
+
+  // Copy buttons
+  function toast(msg) {
+    var t = el("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove("show"); }, 1700);
+  }
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { toast("Copied to clipboard"); },
+        function () { legacyCopy(text); });
+    } else { legacyCopy(text); }
+  }
+  function legacyCopy(text) {
+    var ta = document.createElement("textarea"); ta.value = text;
+    ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta);
+    ta.select(); try { document.execCommand("copy"); toast("Copied to clipboard"); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  document.querySelectorAll(".copy").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var node = document.querySelector(b.getAttribute("data-copy"));
+      copyText(node.innerText.replace(/\n{2,}/g, "\n\n").trim());
+    });
+  });
+  document.querySelectorAll(".prompt").forEach(function (b) {
+    b.addEventListener("click", function () { copyText(b.innerText.trim()); });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

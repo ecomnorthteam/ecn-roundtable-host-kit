@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Ecom North Roundtable · Participant Slides</title>
+<style>
+  :root {
+    --bg: oklch(0.20 0.014 235);
+    --bg-2: oklch(0.24 0.016 235);
+    --ink: oklch(0.97 0.005 230);
+    --ink-soft: oklch(0.80 0.012 220);
+    --ink-mute: oklch(0.64 0.012 220);
+    --north: oklch(0.74 0.10 188);
+    --north-deep: oklch(0.55 0.09 192);
+    --north-wash: oklch(0.30 0.05 195);
+    --amber: oklch(0.80 0.14 70);
+    --amber-deep: oklch(0.70 0.15 62);
+    --line: oklch(0.34 0.014 230);
+    --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--sans); background: var(--bg); color: var(--ink);
+    overflow: hidden; -webkit-font-smoothing: antialiased;
+  }
+
+  .deck { height: 100vh; width: 100vw; position: relative; }
+
+  .slide {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    justify-content: center; align-items: flex-start;
+    padding: clamp(40px, 7vw, 120px);
+    opacity: 0; visibility: hidden; transform: translateY(14px);
+    transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), visibility 0.5s;
+    background:
+      radial-gradient(80% 70% at 88% 8%, var(--north-wash) 0%, transparent 55%),
+      var(--bg);
+  }
+  .slide.active { opacity: 1; visibility: visible; transform: translateY(0); z-index: 2; }
+  .slide.center { align-items: center; text-align: center; }
+  .slide-inner { max-width: 1100px; width: 100%; }
+  .center .slide-inner { margin: 0 auto; }
+
+  .kick {
+    display: inline-flex; align-items: center; gap: 10px; color: var(--north);
+    font-size: clamp(13px, 1.3vw, 16px); font-weight: 600; letter-spacing: 0.16em;
+    text-transform: uppercase; margin-bottom: 28px;
+  }
+  .kick .compass { width: 18px; height: 18px; flex: none; }
+
+  h1 {
+    font-family: var(--serif); font-weight: 600; letter-spacing: -0.03em;
+    font-size: clamp(2.6rem, 1.4rem + 6vw, 6rem); line-height: 0.98;
+    text-wrap: balance;
+  }
+  h2 {
+    font-family: var(--serif); font-weight: 600; letter-spacing: -0.025em;
+    font-size: clamp(2rem, 1.2rem + 4vw, 4.2rem); line-height: 1.04; text-wrap: balance;
+  }
+  .lede { font-size: clamp(1.15rem, 0.9rem + 1.3vw, 1.9rem); color: var(--ink-soft); line-height: 1.45; margin-top: clamp(20px, 3vh, 36px); max-width: 24ch; }
+  .center .lede { max-width: 30ch; }
+  .big-accent { color: var(--north); }
+  .amber { color: var(--amber); }
+
+  /* number tag per slide */
+  .tag {
+    font-family: var(--mono); font-size: clamp(12px, 1.2vw, 15px); color: var(--north-deep);
+    font-weight: 600; letter-spacing: 0.04em;
+  }
+
+  /* THE RULE slide */
+  .rule-wrap { text-align: center; }
+  .rule-eyebrow { font-size: clamp(14px,1.4vw,18px); letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); font-weight: 700; margin-bottom: 22px; }
+  .rule-big { font-family: var(--serif); font-weight: 600; font-size: clamp(2.8rem, 1.4rem + 7vw, 7rem); line-height: 0.98; letter-spacing: -0.03em; }
+  .rule-sub { font-size: clamp(1.05rem, 0.9rem + 1.1vw, 1.6rem); color: var(--ink-soft); margin-top: 30px; max-width: 30ch; margin-inline: auto; }
+
+  /* Today's questions */
+  .q-grid { display: grid; gap: clamp(16px, 3vh, 28px); margin-top: clamp(24px,4vh,44px); width: 100%; }
+  .q-card { border: 1px solid var(--line); border-radius: 18px; padding: clamp(22px, 3.2vw, 40px); background: var(--bg-2); position: relative; }
+  .q-card.b { border-color: var(--north-deep); background: linear-gradient(180deg, var(--north-wash), var(--bg-2)); }
+  .q-label { font-family: var(--mono); font-size: clamp(12px,1.2vw,15px); letter-spacing: 0.06em; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .q-label .pill { background: var(--north); color: var(--bg); border-radius: 100px; padding: 3px 11px; }
+  .q-card.b .q-label .pill { background: var(--amber); }
+  .q-text { font-family: var(--serif); font-size: clamp(1.4rem, 1rem + 2.4vw, 3rem); line-height: 1.12; letter-spacing: -0.02em; outline: none; }
+  .q-text:focus { box-shadow: 0 2px 0 var(--north); }
+  .q-edit-hint { position: absolute; top: 16px; right: 18px; font-size: 11px; font-family: var(--mono); color: var(--ink-mute); opacity: 0.6; }
+
+  /* Timeline (trio) */
+  .tl { display: flex; flex-direction: column; gap: 14px; margin-top: clamp(24px,4vh,40px); width: 100%; }
+  .tl-row { display: grid; grid-template-columns: clamp(90px,12vw,150px) 1fr; gap: clamp(16px,2.5vw,32px); align-items: center; }
+  .tl-time { font-family: var(--mono); font-weight: 600; font-size: clamp(1.1rem,0.9rem+1.2vw,1.7rem); color: var(--amber); text-align: right; }
+  .tl-bar { border: 1px solid var(--line); border-radius: 14px; padding: clamp(14px,2vw,22px) clamp(18px,2.4vw,28px); background: var(--bg-2); font-size: clamp(1rem,0.85rem+0.9vw,1.45rem); }
+  .tl-bar b { color: var(--north); }
+  .tl-bar.hot { border-color: var(--north-deep); background: var(--north-wash); }
+
+  /* Hot seat 1-2-3 */
+  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px,2vw,26px); margin-top: clamp(28px,4vh,48px); width: 100%; }
+  .step { border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px,2.6vw,34px); background: var(--bg-2); }
+  .step .min { font-family: var(--mono); font-weight: 700; font-size: clamp(2rem,1.2rem+3vw,3.6rem); line-height: 1; letter-spacing: -0.03em; }
+  .step .min small { font-size: 0.32em; color: var(--ink-mute); font-weight: 600; letter-spacing: 0.1em; display: block; margin-top: 8px; text-transform: uppercase; }
+  .step h3 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.2rem,0.9rem+1.3vw,1.9rem); margin: 18px 0 8px; letter-spacing: -0.015em; }
+  .step p { color: var(--ink-soft); font-size: clamp(0.95rem,0.85rem+0.5vw,1.2rem); line-height: 1.4; }
+  .step.focus { border-color: var(--amber-deep); }
+  .step.focus .min { color: var(--amber); }
+  .step:not(.focus) .min { color: var(--north); }
+
+  /* Big statement / numbered */
+  .lines { display: flex; flex-direction: column; gap: clamp(14px,2.4vh,26px); margin-top: clamp(24px,4vh,40px); }
+  .lines li { list-style: none; display: flex; gap: 20px; align-items: baseline; font-size: clamp(1.15rem,0.95rem+1.4vw,2.1rem); line-height: 1.2; font-family: var(--serif); letter-spacing: -0.015em; }
+  .lines li .n { font-family: var(--mono); font-size: 0.5em; color: var(--north); font-weight: 600; flex: none; }
+  .lines li b { color: var(--amber); font-family: var(--serif); }
+
+  .norms { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: clamp(28px,4vh,44px); width: 100%; }
+  .norm { border: 1px solid var(--line); border-radius: 16px; padding: clamp(20px,2.6vw,30px); background: var(--bg-2); }
+  .norm .ic { font-size: 1.8rem; }
+  .norm h4 { font-size: clamp(1.05rem,0.9rem+0.8vw,1.4rem); margin: 12px 0 6px; font-weight: 650; }
+  .norm p { color: var(--ink-soft); font-size: clamp(0.92rem,0.85rem+0.4vw,1.1rem); line-height: 1.4; }
+
+  /* ---------- chrome ---------- */
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--amber); width: 0%; z-index: 50; transition: width 0.4s var(--ease); }
+  .nav { position: fixed; bottom: clamp(18px,3vh,34px); right: clamp(20px,3vw,40px); display: flex; align-items: center; gap: 14px; z-index: 50; }
+  .counter { font-family: var(--mono); font-size: 13px; color: var(--ink-mute); }
+  .counter b { color: var(--ink); }
+  .arrow {
+    width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line);
+    background: oklch(0.24 0.016 235 / 0.7); backdrop-filter: blur(8px); color: var(--ink);
+    cursor: pointer; display: grid; place-items: center; transition: transform 0.15s var(--ease), border-color 0.15s;
+  }
+  .arrow:hover { border-color: var(--north); transform: translateY(-1px); }
+  .arrow:disabled { opacity: 0.3; cursor: default; transform: none; }
+  .arrow svg { width: 20px; height: 20px; }
+  .dots { position: fixed; bottom: clamp(20px,3vh,36px); left: 50%; transform: translateX(-50%); display: flex; gap: 9px; z-index: 50; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); border: 0; cursor: pointer; padding: 0; transition: background 0.2s, transform 0.2s; }
+  .dot.on { background: var(--north); transform: scale(1.35); }
+  .hint-fs { position: fixed; top: 18px; right: 20px; z-index: 50; font-family: var(--mono); font-size: 12px; color: var(--ink-mute); background: oklch(0.24 0.016 235 / 0.6); border: 1px solid var(--line); border-radius: 100px; padding: 6px 13px; cursor: pointer; }
+  .hint-fs:hover { color: var(--ink); border-color: var(--north); }
+
+  @media (max-width: 700px) {
+    .three { grid-template-columns: 1fr; }
+    .tl-row { grid-template-columns: 70px 1fr; }
+    .nav .counter { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .slide { transition: opacity 0.2s; transform: none !important; }
+    * { scroll-behavior: auto; }
+  }
+
+  @media print {
+    html, body { height: auto; overflow: visible; background: #fff; }
+    .deck { height: auto; }
+    .nav, .dots, .progress, .hint-fs { display: none !important; }
+    .slide {
+      position: relative; inset: auto; opacity: 1 !important; visibility: visible !important;
+      transform: none !important; height: 100vh; break-after: page; border-bottom: 1px solid #ddd;
+      background: #fff; color: #111;
+    }
+    .lede, .step p, .tl-bar, .norm p, .q-text { color: #222; }
+    .kick, .big-accent, .tl-bar b, .step .min, .lines li .n { color: #0a6b6b; }
+    .amber, .tl-time, .rule-eyebrow, .lines li b, .step.focus .min { color: #b5680e; }
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<button class="hint-fs" id="fsBtn">⤢ Fullscreen &middot; ← → to move</button>
+
+<div class="deck" id="deck">
+
+  <!-- 1 · COVER -->
+  <section class="slide center active">
+    <div class="slide-inner">
+      <span class="kick">
+        <svg class="compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><polygon points="12,6 14,12 12,18 10,12" fill="currentColor" stroke="none"/></svg>
+        Ecom North &middot; Northbound
+      </span>
+      <h1>The Roundtable</h1>
+      <p class="lede">Tonight we mine the gold <span class="big-accent">in the room.</span></p>
+    </div>
+  </section>
+
+  <!-- 2 · WHY -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="tag">Why we&rsquo;re here</span>
+      <h2 style="margin-top:20px">This room holds more real operator experience than any course you could buy.</h2>
+      <p class="lede" style="max-width:34ch">Tonight isn&rsquo;t a webinar. It&rsquo;s you, getting unstuck on something real, with founders who actually get it.</p>
+    </div>
+  </section>
+
+  <!-- 3 · THE SHAPE -->
+  <section class="slide center">
+    <div class="slide-inner">
+      <span class="tag">How tonight works</span>
+      <h2 style="margin-top:18px">60 minutes &middot; small trios &middot; <span class="big-accent">you are the content</span></h2>
+      <p class="lede">We&rsquo;ll break into groups of three. Each of you gets the hot seat. No slides to sit through, no pitch.</p>
+    </div>
+  </section>
+
+  <!-- 4 · THE ONE RULE -->
+  <section class="slide center">
+    <div class="slide-inner rule-wrap">
+      <div class="rule-eyebrow">One rule &middot; the whole game</div>
+      <div class="rule-big">Questions<br>before advice.</div>
+      <p class="rule-sub">When it&rsquo;s someone&rsquo;s turn, get curious first. Hold your advice for two minutes. The best help usually starts as a great question.</p>
+    </div>
+  </section>
+
+  <!-- 5 · TODAY'S QUESTIONS (host can edit live) -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="tag">Your two questions tonight</span>
+      <div class="q-grid">
+        <div class="q-card">
+          <span class="q-edit-hint">host: click to edit</span>
+          <div class="q-label"><span class="pill">A</span> Warm-up &middot; 4 min, everyone</div>
+          <div class="q-text" contenteditable="true" spellcheck="false" data-key="qA">What&rsquo;s one thing taking up a lot of your brain space right now?</div>
+        </div>
+        <div class="q-card b">
+          <span class="q-edit-hint">host: click to edit</span>
+          <div class="q-label"><span class="pill">B</span> Hot seat &middot; the one you&rsquo;ll dig into</div>
+          <div class="q-text" contenteditable="true" spellcheck="false" data-key="qB">What&rsquo;s one &ldquo;ungoogleable&rdquo; problem you&rsquo;re facing right now?</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · IN YOUR TRIO (timeline) -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="tag">Inside your breakout room (24 min)</span>
+      <div class="tl">
+        <div class="tl-row"><div class="tl-time">4 min</div><div class="tl-bar"><b>Warm-up.</b> Everyone answers Question A. Just get talking.</div></div>
+        <div class="tl-row"><div class="tl-time">6 min</div><div class="tl-bar hot"><b>Person 1</b> in the hot seat.</div></div>
+        <div class="tl-row"><div class="tl-time">6 min</div><div class="tl-bar hot"><b>Person 2</b> in the hot seat.</div></div>
+        <div class="tl-row"><div class="tl-time">6 min</div><div class="tl-bar hot"><b>Person 3</b> in the hot seat.</div></div>
+        <div class="tl-row"><div class="tl-time">2 min</div><div class="tl-bar">Pick the <b>one best nugget</b> your trio heard.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · THE HOT SEAT 1-2-3 -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="tag">Each person&rsquo;s 6 minutes in the hot seat</span>
+      <div class="three">
+        <div class="step focus"><div class="min">1<small>minute</small></div><h3>You talk</h3><p>Name the thing you&rsquo;re stuck on (Question B). Just lay it out.</p></div>
+        <div class="step focus"><div class="min">2<small>minutes</small></div><h3>They ask</h3><p>The other two ask <b>clarifying questions only.</b> No advice yet.</p></div>
+        <div class="step"><div class="min">3<small>minutes</small></div><h3>They help</h3><p>Now the floor opens. Ideas, experience, what they&rsquo;d try.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · WHEN IT'S NOT YOUR TURN -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="tag">When it&rsquo;s not your turn</span>
+      <h2 style="margin-top:18px">Stay curious. <span class="amber">Ask, don&rsquo;t solve</span> &mdash; yet.</h2>
+      <ul class="lines">
+        <li><span class="n">&rarr;</span><span>&ldquo;What have you already tried?&rdquo;</span></li>
+        <li><span class="n">&rarr;</span><span>&ldquo;What does <b>good</b> look like for you here?&rdquo;</span></li>
+        <li><span class="n">&rarr;</span><span>&ldquo;What&rsquo;s really making this hard?&rdquo;</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 9 · GOLD NUGGET -->
+  <section class="slide center">
+    <div class="slide-inner">
+      <span class="tag">Last 2 minutes in your room</span>
+      <h2 style="margin-top:18px">Pick the <span class="big-accent">one nugget</span> worth bringing back.</h2>
+      <p class="lede">A tactic, a reframe, a contact, an &ldquo;oh that&rsquo;s smart.&rdquo; One per trio.</p>
+    </div>
+  </section>
+
+  <!-- 10 · BACK TOGETHER -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="tag">Back in the main room</span>
+      <h2 style="margin-top:18px">Each trio drops <span class="big-accent">one gold nugget.</span></h2>
+      <p class="lede" style="max-width:36ch">We type them into a shared doc as we go. You&rsquo;ll get it in Slack after &mdash; the whole room&rsquo;s wisdom, in one place.</p>
+    </div>
+  </section>
+
+  <!-- 11 · CLOSE -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="tag">Before we go</span>
+      <h2 style="margin-top:16px">Drop two things in the chat:</h2>
+      <ul class="lines">
+        <li><span class="n">1</span><span>One <b>commitment</b> &mdash; &ldquo;By next week I will&hellip;&rdquo;</span></li>
+        <li><span class="n">2</span><span>One closing line starting with <b>&ldquo;I am&hellip;&rdquo;</b>, <b>&ldquo;I believe&hellip;&rdquo;</b>, or <b>&ldquo;I will&hellip;&rdquo;</b></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 12 · NORMS -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="tag">A few ground rules</span>
+      <div class="norms">
+        <div class="norm"><div class="ic">🤐</div><h4>What&rsquo;s said here, stays here</h4><p>Real talk needs safety. Keep it in the room.</p></div>
+        <div class="norm"><div class="ic">🙋</div><h4>Challenge by choice</h4><p>Share as much or as little as you want. No pressure.</p></div>
+        <div class="norm"><div class="ic">⏱️</div><h4>Watch the clock</h4><p>Equal time. Everyone gets their full hot seat.</p></div>
+        <div class="norm"><div class="ic">📷</div><h4>Cameras on if you can</h4><p>Trios work best face to face.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · GO -->
+  <section class="slide center">
+    <div class="slide-inner">
+      <span class="kick" style="justify-content:center">
+        <svg class="compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><polygon points="12,6 14,12 12,18 10,12" fill="currentColor" stroke="none"/></svg>
+        Northbound
+      </span>
+      <h1>Let&rsquo;s mine some gold.</h1>
+      <p class="lede">Heading into trios now. See you at the social.</p>
+    </div>
+  </section>
+
+</div>
+
+<div class="dots" id="dots"></div>
+<div class="nav">
+  <span class="counter"><b id="cur">1</b> / <span id="total">13</span></span>
+  <button class="arrow" id="prev" aria-label="Previous slide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+  <button class="arrow" id="next" aria-label="Next slide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var n = slides.length, i = 0;
+  var dotsWrap = document.getElementById("dots");
+  var progress = document.getElementById("progress");
+  var cur = document.getElementById("cur");
+  document.getElementById("total").textContent = n;
+
+  slides.forEach(function (_, k) {
+    var d = document.createElement("button");
+    d.className = "dot"; d.setAttribute("aria-label", "Go to slide " + (k + 1));
+    d.addEventListener("click", function () { go(k); });
+    dotsWrap.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  function go(k) {
+    k = Math.max(0, Math.min(n - 1, k));
+    slides[i].classList.remove("active");
+    dots[i].classList.remove("on");
+    i = k;
+    slides[i].classList.add("active");
+    dots[i].classList.add("on");
+    cur.textContent = i + 1;
+    progress.style.width = ((i) / (n - 1)) * 100 + "%";
+    document.getElementById("prev").disabled = i === 0;
+    document.getElementById("next").disabled = i === n - 1;
+  }
+  function nextS() { go(i + 1); }
+  function prevS() { go(i - 1); }
+
+  document.getElementById("next").addEventListener("click", nextS);
+  document.getElementById("prev").addEventListener("click", prevS);
+
+  document.addEventListener("keydown", function (e) {
+    if (document.activeElement && document.activeElement.isContentEditable) {
+      if (e.key === "Escape") document.activeElement.blur();
+      return;
+    }
+    if (e.key === "ArrowRight" || e.key === "PageDown" || e.code === "Space") { e.preventDefault(); nextS(); }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); prevS(); }
+    else if (e.key === "Home") go(0);
+    else if (e.key === "End") go(n - 1);
+    else if (e.key === "f" || e.key === "F") toggleFs();
+  });
+
+  // Touch swipe
+  var x0 = null;
+  document.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener("touchend", function (e) {
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 50) { dx < 0 ? nextS() : prevS(); }
+    x0 = null;
+  }, { passive: true });
+
+  // Fullscreen
+  function toggleFs() {
+    if (!document.fullscreenElement) {
+      (document.documentElement.requestFullscreen || function(){}).call(document.documentElement);
+    } else { document.exitFullscreen(); }
+  }
+  document.getElementById("fsBtn").addEventListener("click", toggleFs);
+
+  // Persist host-edited questions across reloads
+  document.querySelectorAll("[data-key]").forEach(function (el) {
+    var k = "ecn-rt-" + el.getAttribute("data-key");
+    try { var v = localStorage.getItem(k); if (v) el.textContent = v; } catch (e) {}
+    el.addEventListener("input", function () {
+      try { localStorage.setItem(k, el.textContent); } catch (e) {}
+    });
+  });
+
+  go(0);
+})();
+</script>
+</body>
+</html>
